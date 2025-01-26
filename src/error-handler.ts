@@ -10,7 +10,11 @@ export const errorHandler = (method:Function)=>{
             if(error instanceof HttpException){
                 exception = error;
             }else{
-                exception = new InternalException("Internal server error" , ErrorCodes.INTERNAL_SERVER_ERROR, error)
+                if(error instanceof ZodError){
+                    exception = new BadRequestException("Unprocessable Entity" , ErrorCodes.UNPROCESSABLE_ENTITY , error)
+                }else{
+                    exception = new InternalException("Internal server error" , ErrorCodes.INTERNAL_SERVER_ERROR, error)
+                }
             }
 
             next(exception);
